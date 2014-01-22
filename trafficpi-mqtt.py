@@ -16,8 +16,8 @@ trafficfeed = "http://hatrafficinfo.dft.gov.uk/feeds/datex/England/JourneyTimeDa
 # Parse Parameters
 parser = argparse.ArgumentParser(description='Traffic indicator using LedBorg - Green, Amber or Red based on journey time.')
 parser.add_argument('--location',default="10710",help='specify the location code to check default: 10710 (M275 to M3)')
-parser.add_argument('--warn',default=25,help='Specify the minimum journey time to warn on default: 25')
-parser.add_argument('--alert',default=30,help='Specify the minimum journey time to alert on default: 30')
+parser.add_argument('--warn',default=1500,help='Specify the minimum journey time to warn on default: 25')
+parser.add_argument('--alert',default=1800,help='Specify the minimum journey time to alert on default: 30')
 args = parser.parse_args()
 if args.location:
 	selected_location = args.location
@@ -80,6 +80,7 @@ for elab in root[1]:
 # Calculate delay from normally expected time (seconds) not currently used
 delay = float(times.get('travelTime')) - float(times.get('normallyExpectedTravelTime'))
 print times.get('normallyExpectedTravelTime')
+print times.get('travelTime')
 # Current travel time in minutes
 travelTime=times.get('travelTime')
 if travelTime < 0:
@@ -89,9 +90,14 @@ mqttc.publish("traffic", travelTime,qos=0,retain=True)
 if travelTime < args.warn:
 	# If it's lower than this let's glow green 
 	mqttc.publish("light/10", "120" ,qos=0,retain=False)
+	mqttc.publish("light/1", "0" ,qos=0,retain=False)
+	mqttc.publish("light/2", "0" ,qos=0,retain=False)
 elif travelTime < args.alert:
 	# Between amber and red - must be amber
 	mqttc.publish("light/2", "255" ,qos=0,retain=False)
+	mqttc.publish("light/1", "0" ,qos=0,retain=False)
 else:
 	# Glow red
 	mqttc.publish("light/1", "255" ,qos=0,retain=False)
+	mqttc.publish("light/10", "0" ,qos=0,retain=False)
+	mqttc.publish("light/2", "0" ,qos=0,retain=False)
