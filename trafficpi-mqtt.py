@@ -79,25 +79,21 @@ for elab in root[1]:
 
 # Calculate delay from normally expected time (seconds) not currently used
 delay = float(times.get('travelTime')) - float(times.get('normallyExpectedTravelTime'))
-print times.get('normallyExpectedTravelTime')
-print times.get('travelTime')
+print "expected: " + times.get('normallyExpectedTravelTime')
+print "current:  " + times.get('travelTime')
 # Current travel time in minutes
 travelTime=times.get('travelTime')
 if travelTime < 0:
   travelTime = times.get('normallyExpectedTravelTime')
+mqttc.publish("traffic/%s" % args.location, travelTime,qos=0,retain=True)
 mqttc.publish("traffic", travelTime,qos=0,retain=True)
 
 if travelTime < args.warn:
 	# If it's lower than this let's glow green 
-	mqttc.publish("light/10", "120" ,qos=0,retain=False)
-	mqttc.publish("light/1", "0" ,qos=0,retain=False)
-	mqttc.publish("light/2", "0" ,qos=0,retain=False)
+	mqttc.publish("light/rgb", "00ff00" ,qos=0,retain=False)
 elif travelTime < args.alert:
 	# Between amber and red - must be amber
-	mqttc.publish("light/2", "255" ,qos=0,retain=False)
-	mqttc.publish("light/1", "0" ,qos=0,retain=False)
+	mqttc.publish("light/rgb", "996600" ,qos=0,retain=False)
 else:
 	# Glow red
-	mqttc.publish("light/1", "255" ,qos=0,retain=False)
-	mqttc.publish("light/10", "0" ,qos=0,retain=False)
-	mqttc.publish("light/2", "0" ,qos=0,retain=False)
+	mqttc.publish("light/rgb", "ff0000" ,qos=0,retain=False)
