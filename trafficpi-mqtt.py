@@ -84,7 +84,7 @@ print "current:  " + times.get('travelTime')
 # Current travel time in minutes
 travelTime=times.get('travelTime')
 if travelTime < 0:
-  travelTime = times.get('normallyExpectedTravelTime')
+	travelTime = times.get('normallyExpectedTravelTime')
 mqttc.publish("traffic/%s" % args.location, travelTime,qos=0,retain=True)
 mqttc.publish("traffic", travelTime,qos=0,retain=True)
 
