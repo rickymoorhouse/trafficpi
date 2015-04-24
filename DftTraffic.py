@@ -35,7 +35,10 @@ def journey_times(route_id):
                     if times.get('travelTime') < 0:
                         delay = 0
                     else:
-                        delay = float(times.get('travelTime')) - float(times.get('normallyExpectedTravelTime'))
+                        try:
+                            delay = float(times.get('travelTime')) - float(times.get('freeFlowTravelTime'))
+                        except:
+                            print times
     return {
         "expected":times.get('normallyExpectedTravelTime'),
         "current":times.get('travelTime'),
