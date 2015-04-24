@@ -37,7 +37,8 @@ def journey_times(route_id):
                     else:
                         try:
                             delay = float(times.get('travelTime')) - float(times.get('freeFlowTravelTime'))
-                        except:
+                        except TypeError:
+                            print "Unexpected data back from Web service"
                             print times
     return {
         "expected":times.get('normallyExpectedTravelTime'),
