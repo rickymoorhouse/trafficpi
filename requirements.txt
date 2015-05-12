@@ -1,4 +1,4 @@
 cherrypy
-paho.mqtt.client
+paho-mqtt
 xml.etree.ElementTree
 urllib2
