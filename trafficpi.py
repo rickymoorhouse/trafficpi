@@ -28,7 +28,8 @@ if __name__ == "__main__":
         selected_location = args.location
 
     # Get the feed over http
-    times = DftTraffic.journey_times(args.location)
+    journeys = DftTraffic.DftTraffic()
+    times = journeys.journey_times(args.location)
 
 
     # Current travel time in minutes

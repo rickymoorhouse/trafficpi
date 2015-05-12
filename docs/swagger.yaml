@@ -1,0 +1,44 @@
+swagger: '2.0'
+info:
+  title: Journey times
+  description: Provides journey times for UK roads - data from Department for Transport under the Open Government License
+  version: "0.1.0"
+# the domain of the service
+host: 192.168.1.14
+# array of all schemes that your API supports
+schemes:
+  - http
+# will be prefixed to all paths
+basePath: /
+produces:
+  - application/json
+paths:
+  /route/{id}:
+    get:
+      summary: Journey times for route
+      description: Returns expected and current journey times for the route
+      parameters:
+      - name: id
+        in: path
+        type: string
+        description: Route segment ID
+      responses:
+        200:
+          description: Successful retrieval of route information
+          schema:
+            $ref: '#/definitions/TravelTimes'
+definitions:
+  TravelTimes:
+    properties:
+      expected:
+        type: number
+        description: Expected travel time in seconds.
+      current:
+        type: number
+        description: Current travel time in seconds.
+      freeflow:
+        type: number
+        description: Journey time when traffic flows freely.
+      delay:
+        type: number
+        description: Current delay from expected time in seconds.
