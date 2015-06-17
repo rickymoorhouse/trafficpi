@@ -4,12 +4,12 @@ info:
   description: Provides journey times for UK roads - data from Department for Transport under the Open Government License
   version: "0.1.0"
 # the domain of the service
-host: 192.168.1.14
+host: uktraffic.eu-gb.mybluemix.net
 # array of all schemes that your API supports
 schemes:
-  - http
+  - "http"
 # will be prefixed to all paths
-basePath: /
+basePath: "/"
 produces:
   - application/json
 paths:

@@ -16,12 +16,20 @@ class JourneyTime(object):
 	return self.dft.journey_times(route_id)
 #	except:
 #		raise cherrypy.HTTPError(404,"Route not found")
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
+    def sections(self,search):
+        output = {}
+        results = self.dft.find_section(search)
+        for result in results:
+            output[results[result]] = "/route/%s" % result
+        return output
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 conf = {
     'global': {
         'server.socket_host': '0.0.0.0',
-        'server.socket_port': os.getenv('PORT',8004),
+        'server.socket_port': int(os.getenv('VCAP_APP_PORT',8004)),
     },
     '/': {
         'tools.staticdir.on': True,
