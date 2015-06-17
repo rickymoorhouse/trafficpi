@@ -13,18 +13,40 @@ import logging
 class DftTraffic(object):
     # Settings
     TRAFFIC_URL = "http://hatrafficinfo.dft.gov.uk/feeds/datex/England/JourneyTimeData/content.xml"
+    SECTION_URL = "http://hatrafficinfo.dft.gov.uk/feeds/datex/England/PredefinedLocationJourneyTimeSections/content.xml"
     xml_data = ''
     journeys = {}
+    locations = {}
     updated_at = 0
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.keep_data_updated()
+        self.section_data = urllib2.urlopen(self.SECTION_URL)
+        self.load_sections()
 
     def keep_data_updated(self):
         if time.time() - self.updated_at > 600:
             self.xml_data = urllib2.urlopen(self.TRAFFIC_URL)
             self.updated_at = time.time()
-            
+
+    def load_sections(self):
+        """Return the section details for the search provided"""
+        tree = ET.parse(self.section_data)
+        root = tree.getroot()
+        locations = root.find('{http://datex2.eu/schema/1_0/1_0}payloadPublication').find('{http://datex2.eu/schema/1_0/1_0}predefinedLocationSet')
+        for child in locations:
+            try:
+                section_id=child.attrib['id'].replace('Section','')
+                self.locations[section_id] = child[0][0].text.replace('Journey Time Section for ','')
+            except Exception as e:
+                print e
+
+    def find_section(self,search):
+        return_list = {}
+        for loc in self.locations:
+            if search in self.locations[loc]:
+                return_list[loc] = self.locations[loc]
+        return return_list
 
     def journey_times(self, route_id):
         """Return the journey time for route (identified by route_id) in seconds"""
@@ -61,11 +83,14 @@ class DftTraffic(object):
                                     self.logger.warn(times)
                     times['updatedAt'] = self.updated_at
                     self.journeys[route_id] = times
-            print self.journeys
-        times['updatedAt'] = time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime(times['updatedAt']))
+#        times['updatedAtStr'] = time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime(times['updatedAt']))
         return times
 #{
 #            "expected":times.get('normallyExpectedTravelTime'),
 #            "current":times.get('travelTime'),
 #            "delay":delay
 #        }
+if __name__ == "__main__":
+    dft = DftTraffic()
+    print dft.find_section("M27")
+
