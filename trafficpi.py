@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import DftTraffic
 import argparse
+import requests
 
 def hex_to_rgb(value):
     value = value.lstrip('#')
@@ -22,20 +23,24 @@ if __name__ == "__main__":
     parser.add_argument('--warn', default=1500, help='Specify the minimum journey time to warn on default: 25')
     parser.add_argument('--alert', default=1800, help='Specify the minimum journey time to alert on default: 30')
     parser.add_argument('--notify', default='console', help='How to notify - mqtt,  piglow or console')
+    parser.add_argument('--api', default=False, help='Use API at this URL')
 
     args = parser.parse_args()
     if args.location:
         selected_location = args.location
 
     # Get the feed over http
-    journeys = DftTraffic.DftTraffic()
-    times = journeys.journey_times(args.location)
+    if args.api:
+        times = requests.get("%s/route/%s" % (args.api,args.location)).json()
+    else:
+        journeys = DftTraffic.DftTraffic()
+        times = journeys.journey_times(args.location)
 
 
     # Current travel time in minutes
-    travelTime = times['current']
+    travelTime = times['travelTime']
     if travelTime < 0:
-        travelTime = times['expected']
+        travelTime = times['normallyExpectedTravelTime']
 
     if travelTime < args.warn:
         # If it's lower than this let's glow green
@@ -62,8 +67,8 @@ if __name__ == "__main__":
         PyGlow().led(4, g)
         PyGlow().led(5, b)
     else:
-        print "expected:  %s" % times['expected']
-        print "current:   %s" % times['current']
+        print "expected:  %s" % times['normallyExpectedTravelTime']
+        print "current:   %s" % times['travelTime']
         print "delay:     %f" % times['delay']
         print "colour:    %s" % colour
 
