@@ -84,6 +84,7 @@ class DftTraffic(object):
                     times['updatedAt'] = self.updated_at
                     self.journeys[route_id] = times
 #        times['updatedAtStr'] = time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime(times['updatedAt']))
+        times['description'] = self.locations[route_id]
         return times
 #{
 #            "expected":times.get('normallyExpectedTravelTime'),

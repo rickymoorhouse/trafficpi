@@ -5,24 +5,27 @@ import os
 
 class JourneyTime(object):
     dft = None
+    env = None
 
     def __init__(self):
         self.dft = DftTraffic.DftTraffic()
+        self.env = json.loads(os.getenv('VCAP_APPLICATION','{}'))
 
     @cherrypy.tools.json_out()
     @cherrypy.expose
     def route(self,route_id=1):
-#	try:	
 	return self.dft.journey_times(route_id)
-#	except:
-#		raise cherrypy.HTTPError(404,"Route not found")
+
     @cherrypy.tools.json_out()
     @cherrypy.expose
     def sections(self,search):
-        output = {}
+        output = []
+        hostname = ''
         results = self.dft.find_section(search)
+        if 'application_uris' in self.env:
+            hostname = self.env['application_uris'][0]
         for result in results:
-            output[results[result]] = "/route/%s" % result
+            output.append({'path':"%s/route/%s" % (hostname,result),'description':results[result]})
         return output
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
