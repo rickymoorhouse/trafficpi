@@ -6,7 +6,7 @@ Currently supported:
  - Journey time
 """
 import xml.etree.ElementTree as ET
-import urllib2
+import requests
 import time
 import logging
 
@@ -21,18 +21,17 @@ class DftTraffic(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.keep_data_updated()
-        self.section_data = urllib2.urlopen(self.SECTION_URL)
+        self.section_data = requests.get(self.SECTION_URL).text
         self.load_sections()
 
     def keep_data_updated(self):
         if time.time() - self.updated_at > 600:
-            self.xml_data = urllib2.urlopen(self.TRAFFIC_URL)
+            self.xml_data = requests.get(self.TRAFFIC_URL).text
             self.updated_at = time.time()
 
     def load_sections(self):
         """Return the section details for the search provided"""
-        tree = ET.parse(self.section_data)
-        root = tree.getroot()
+        root = ET.fromstring(self.section_data)
         locations = root.find('{http://datex2.eu/schema/1_0/1_0}payloadPublication').find('{http://datex2.eu/schema/1_0/1_0}predefinedLocationSet')
         for child in locations:
             try:
@@ -53,13 +52,12 @@ class DftTraffic(object):
         times = { "updatedAt": 0 }
         if route_id in self.journeys:
             times = self.journeys[route_id]
-        if time.time() - times['updatedAt'] > 600:
+        else:
             # Get the feed over http
             self.keep_data_updated()
 
             # Parse the XML
-            tree = ET.parse(self.xml_data)
-            root = tree.getroot()
+            root = ET.fromstring(self.xml_data)
 
             # Dictionary to store the data for the location we're interested in
             times = {}
@@ -84,7 +82,8 @@ class DftTraffic(object):
                     times['updatedAt'] = self.updated_at
                     self.journeys[route_id] = times
 #        times['updatedAtStr'] = time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime(times['updatedAt']))
-        times['description'] = self.locations[route_id]
+        if route_id in self.locations:
+            times['description'] = self.locations[route_id]
         return times
 #{
 #            "expected":times.get('normallyExpectedTravelTime'),
