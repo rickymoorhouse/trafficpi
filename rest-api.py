@@ -2,6 +2,8 @@ import json
 import cherrypy
 import DftTraffic
 import os
+import sys
+import logging
 
 class JourneyTime(object):
     dft = None
@@ -9,12 +11,14 @@ class JourneyTime(object):
 
     def __init__(self):
         self.dft = DftTraffic.DftTraffic()
+        self.dft.logger = logging.getLogger(__name__)
         self.env = json.loads(os.getenv('VCAP_APPLICATION','{}'))
 
     @cherrypy.tools.json_out()
     @cherrypy.expose
     def route(self,route_id=1):
-	return self.dft.journey_times(route_id)
+        cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
+        return self.dft.journey_times(route_id)
 
     @cherrypy.tools.json_out()
     @cherrypy.expose
@@ -26,6 +30,7 @@ class JourneyTime(object):
             hostname = self.env['application_uris'][0]
         for result in results:
             output.append({'path':"%s/route/%s" % (hostname,result),'description':results[result]})
+        cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
         return output
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -43,4 +48,6 @@ conf = {
         }
     }
 }
+
+logging.basicConfig(stream = sys.stderr, level=logging.WARNING)
 cherrypy.quickstart(JourneyTime(), '/', config=conf)

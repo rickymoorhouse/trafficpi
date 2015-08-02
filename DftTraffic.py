@@ -25,14 +25,19 @@ class DftTraffic(object):
         self.load_sections()
 
     def keep_data_updated(self):
+        self.logger.info("keep_data_updated entered - last update: %d" % self.updated_at)
         if time.time() - self.updated_at > 600:
+            self.logger.info("retrieving data")
             self.xml_data = requests.get(self.TRAFFIC_URL).text
             self.updated_at = time.time()
 
     def load_sections(self):
         """Return the section details for the search provided"""
-        root = ET.fromstring(self.section_data)
-        locations = root.find('{http://datex2.eu/schema/1_0/1_0}payloadPublication').find('{http://datex2.eu/schema/1_0/1_0}predefinedLocationSet')
+        try:
+            root = ET.fromstring(self.section_data)
+            locations = root.find('{http://datex2.eu/schema/1_0/1_0}payloadPublication').find('{http://datex2.eu/schema/1_0/1_0}predefinedLocationSet')
+        except:
+            locations = []
         for child in locations:
             try:
                 section_id=child.attrib['id'].replace('Section','')
@@ -50,9 +55,11 @@ class DftTraffic(object):
     def journey_times(self, route_id):
         """Return the journey time for route (identified by route_id) in seconds"""
         times = { "updatedAt": 0 }
+
         if route_id in self.journeys:
             times = self.journeys[route_id]
-        else:
+
+        if time.time() - times['updatedAt'] > 600:
             # Get the feed over http
             self.keep_data_updated()
 
