@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/rickymoorhouse/trafficpi.png?label=ready&title=Ready)](https://waffle.io/rickymoorhouse/trafficpi)
 # trafficpi
 
 
