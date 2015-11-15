@@ -1,4 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/rickymoorhouse/trafficpi.png?label=ready&title=Ready)](https://waffle.io/rickymoorhouse/trafficpi)
+[![Stories in Ready](https://badge.waffle.io/rickymoorhouse/trafficpi.png?label=ready&title=Ready)](https://waffle.io/rickymoorhouse/trafficpi)[ ![Codeship Status for rickymoorhouse/trafficpi](https://codeship.com/projects/07b50fe0-6dc8-0133-e3ec-666194911eaf/status?branch=master)](https://codeship.com/projects/115728)
 # trafficpi
 
 
