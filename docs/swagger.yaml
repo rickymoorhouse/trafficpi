@@ -7,7 +7,7 @@ info:
 host: uktraffic.eu-gb.mybluemix.net
 # array of all schemes that your API supports
 schemes:
-  - "http"
+  - "https"
 # will be prefixed to all paths
 basePath: "/"
 produces:
@@ -42,3 +42,16 @@ definitions:
       delay:
         type: number
         description: Current delay from expected time in seconds.
+
+x-ibm-configuration:
+  enforced: true
+  phase: realized
+  testable: true
+  cors:
+    enabled: true
+  assembly:
+    execute:
+      - invoke:
+          title: invoke
+          target-url: 'https://uktraffic.eu-gb.mybluemix.net/route/{id}'
+

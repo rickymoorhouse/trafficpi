@@ -1,0 +1,23 @@
+product: 1.0.0
+info:
+  name: travel-information
+  title: Travel Information
+  version: 1.0.0
+apis:
+  - $ref: 'file:///./swagger.yaml'
+visibility:
+  view:
+    enabled: true
+    type: public
+  subscribe:
+    enabled: true
+    type: authenticated
+plans:
+  default:
+    title: Default Plan
+    apis:
+      - $ref: 'file:///./swagger.yaml'
+    approval: false
+    rate-limit:
+      value: 100/hour
+      hard-limit: false
