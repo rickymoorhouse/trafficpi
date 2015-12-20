@@ -99,5 +99,5 @@ class DftTraffic(object):
 #        }
 if __name__ == "__main__":
     dft = DftTraffic()
-    print dft.find_section("M27")
+    dft.find_section("M27")
 
