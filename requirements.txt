@@ -1,3 +1,4 @@
 cherrypy
+pytest
 requests
 paho-mqtt
