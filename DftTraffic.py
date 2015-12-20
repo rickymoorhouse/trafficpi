@@ -43,7 +43,7 @@ class DftTraffic(object):
                 section_id=child.attrib['id'].replace('Section','')
                 self.locations[section_id] = child[0][0].text.replace('Journey Time Section for ','')
             except Exception as e:
-                print e
+                self.logger.exception(e)
 
     def find_section(self,search):
         return_list = {}
