@@ -1,5 +1,5 @@
 import pytest
-import inspect
+#import inspect
 
 def test_sections():
     import DftTraffic
