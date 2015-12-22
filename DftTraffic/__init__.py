@@ -10,6 +10,7 @@ import requests
 import time
 import logging
 
+
 class DftTraffic(object):
     # Settings
     TRAFFIC_URL = "http://hatrafficinfo.dft.gov.uk/feeds/datex/England/JourneyTimeData/content.xml"
@@ -18,6 +19,7 @@ class DftTraffic(object):
     journeys = {}
     locations = {}
     updated_at = 0
+
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.keep_data_updated()
@@ -40,12 +42,12 @@ class DftTraffic(object):
             locations = []
         for child in locations:
             try:
-                section_id=child.attrib['id'].replace('Section','')
-                self.locations[section_id] = child[0][0].text.replace('Journey Time Section for ','')
+                section_id=child.attrib['id'].replace('Section', '')
+                self.locations[section_id] = child[0][0].text.replace('Journey Time Section for ', '')
             except Exception as e:
                 self.logger.exception(e)
 
-    def find_section(self,search):
+    def find_section(self, search):
         return_list = {}
         for loc in self.locations:
             if search in self.locations[loc]:
@@ -54,7 +56,7 @@ class DftTraffic(object):
 
     def journey_times(self, route_id):
         """Return the journey time for route (identified by route_id) in seconds"""
-        times = { "updatedAt": 0 }
+        times = {"updatedAt": 0}
 
         if route_id in self.journeys:
             times = self.journeys[route_id]
@@ -92,6 +94,7 @@ class DftTraffic(object):
         if route_id in self.locations:
             times['description'] = self.locations[route_id]
         return times
+#
 #{
 #            "expected":times.get('normallyExpectedTravelTime'),
 #            "current":times.get('travelTime'),
