@@ -38,8 +38,8 @@ class DftTraffic(object):
         try:
             root = ET.fromstring(self.section_data)
             locations = root.find('{http://datex2.eu/schema/1_0/1_0}payloadPublication').find('{http://datex2.eu/schema/1_0/1_0}predefinedLocationSet')
-        except xml.etree.ElementTree.ParseError as pe:
-            self.logger.excetion(pe)
+        except ET.ParseError as exception:
+            self.logger.excetion(exception)
             locations = []
         for child in locations:
             try:
