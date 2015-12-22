@@ -27,7 +27,7 @@ class DftTraffic(object):
         self.load_sections()
 
     def keep_data_updated(self):
-        self.logger.info("keep_data_updated entered - last update: %d" % self.updated_at)
+        self.logger.info("keep_data_updated entered - last update: %d", self.updated_at)
         if time.time() - self.updated_at > 600:
             self.logger.info("retrieving data")
             self.xml_data = requests.get(self.TRAFFIC_URL).text
@@ -38,7 +38,8 @@ class DftTraffic(object):
         try:
             root = ET.fromstring(self.section_data)
             locations = root.find('{http://datex2.eu/schema/1_0/1_0}payloadPublication').find('{http://datex2.eu/schema/1_0/1_0}predefinedLocationSet')
-        except:
+        except xml.etree.ElementTree.ParseError as pe:
+            self.logger.excetion(pe)
             locations = []
         for child in locations:
             try:
@@ -81,7 +82,7 @@ class DftTraffic(object):
                             times[tagdata.tag.replace('{http://datex2.eu/schema/1_0/1_0}', '')] = tagdata.text
                             # Calculate delay from normally expected time (seconds)
                             if times.get('travelTime') < 0:
-                                delay = 0
+                                times['delay'] = 0
                             else:
                                 try:
                                     times['delay'] = float(times.get('travelTime')) - float(times.get('freeFlowTravelTime'))
