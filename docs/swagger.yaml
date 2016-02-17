@@ -27,6 +27,21 @@ paths:
           description: Successful retrieval of route information
           schema:
             $ref: '#/definitions/TravelTimes'
+  '/sections/{search}':
+    get:
+      summary: Search for journey sections
+      description: Returns list of journey segments matching search
+      parameters:
+        - description: Search term
+          name: search
+          type: string
+          in: path
+      responses:
+        '200':
+          description: Successful retrieval of route information
+          schema:
+            $ref: '#/definitions/Segments'
+      deprecated: false
 definitions:
   TravelTimes:
     properties:
@@ -42,6 +57,14 @@ definitions:
       delay:
         type: number
         description: Current delay from expected time in seconds.
+  Segments:
+    properties:
+      path:
+        type: string
+        description: Path to retrieve data on this segment
+      description:
+        type: string
+        description: Description of road segment
 
 x-ibm-configuration:
   enforced: true
