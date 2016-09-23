@@ -1,4 +1,4 @@
-cherrypy
+cherrypy==8.1.0
 pytest
 requests==2.11.1
 paho-mqtt==1.2
