@@ -1,4 +1,4 @@
 cherrypy
 pytest
-requests
+requests==2.11.1
 paho-mqtt==1.2
