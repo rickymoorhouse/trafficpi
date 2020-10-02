@@ -1,3 +1,4 @@
-test:
-  override:
-    - py.test test_DftTraffic.py
+jobs: 
+  build_and_test:
+    override:
+      - py.test test_DftTraffic.py
